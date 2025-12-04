@@ -1,10 +1,10 @@
-# Sheffield 提前签到助手 Chrome插件
+# Sheffield 100%签到助手 Chrome插件
 
 一个帮助Sheffield大学学生提前完成课程签到的Chrome浏览器插件。
 
 ## 作者信息
 
-**原作者：林枫☁ (Bristol版本)**  
+**原作者：林枫☁ (Bristol版本)**  （找不到原文地址了，有能找到的朋友补充一下）
 **改编者：迁移至Sheffield大学**  
 谢菲尔德大学 计算机科学系  
 University of Sheffield, Department of Computer Science
@@ -12,7 +12,7 @@ University of Sheffield, Department of Computer Science
 ## 安装方法
 
 1. 下载或克隆此项目到本地
-2. 打开Chrome浏览器，进入扩展程序管理页面（chrome://extensions/）
+2. 打开Chrome/edge浏览器，进入扩展程序管理页面（chrome://extensions/）/(edge://extensions/)
 3. 开启"开发者模式"
 4. 点击"加载已解压的扩展程序"
 5. 选择项目文件夹
@@ -20,7 +20,13 @@ University of Sheffield, Department of Computer Science
 
 ## 使用方法
 
-安装插件后，跟着插件指引操作即可。插件会自动获取你的课程表信息，并提供一键签到功能。
+安装插件后，跟着插件指引操作即可。
+进入isheffield网页（https://i.sheffield.ac.uk/campusm/home#menu）
+打开插件
+点击 获取课程表
+选择需要签到的课程
+输入 OTC签到密码（由讲师提供）【并未成功破译签到码，生成签到码签到功能暂不生效】
+点击一键签到
 
 ## 技术实现
 
@@ -35,6 +41,7 @@ University of Sheffield, Department of Computer Science
 ## 免责声明
 
 - 本插件仅供学习分享，严禁用于任何盈利用途
+- 本插件仅适用与避免学校签到软件时常出错导致签到失败，不适用其他情况
 - 本插件不对任何结果负责，所有的一切仅供学习分享
 - 作者强烈建议好好学习天天向上，不要依赖此插件
 - 请在合规的情况下使用此插件
