@@ -22,13 +22,20 @@ University of Sheffield, Department of Computer Science
 
 ## 使用方法
 
-安装插件后，跟着插件指引操作即可。
-进入isheffield网页（https://i.sheffield.ac.uk/campusm/home#menu）
-打开插件
-点击 获取课程表
-选择需要签到的课程
-输入 OTC签到密码（由讲师提供）【并未成功破译签到码，生成签到码签到功能暂不生效】
-点击一键签到
+1.安装插件后，跟着插件指引操作即可。
+
+2.进入isheffield网页（https://i.sheffield.ac.uk/campusm/home#menu）
+
+3.打开插件
+
+4.点击 获取课程表
+
+5.选择需要签到的课程
+
+6.输入 OTC签到密码（由讲师提供）【并未成功破译签到码，生成签到码签到功能暂不生效】
+
+7.点击一键签到
+
 
 ## 技术实现
 
