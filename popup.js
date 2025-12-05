@@ -24,12 +24,12 @@ document.addEventListener('DOMContentLoaded', function() {
             let eventToUse = null;
             
             if (checkboxes.length > 0) {
-                // 如果有选中，使用第一个选中的
+                // 如果有选中,使用第一个选中的
                 const index = parseInt(checkboxes[0].dataset.index);
                 eventToUse = currentTimetableData[index];
             } else if (currentTimetableData.length > 0) {
-                // 如果没有选中但有课程，尝试使用第一个（或者提示用户选择）
-                // 这里为了方便，如果没有选中的，我们提示用户先选择一个
+                // 如果没有选中但有课程,尝试使用第一个(或者提示用户选择)
+                // 这里为了方便,如果没有选中的,我们提示用户先选择一个
                  showCheckinStatus('请先选择一个课程以生成对应的签到码', 'error');
                  return;
             }
@@ -65,7 +65,7 @@ function loadAndDisplayData() {
         console.log('从storage获取的数据:', result);
         
         if (result.bristolUserInfo) {
-            // 显示用户信息（如果用户信息中缺少cookie，则尝试使用状态信息中的cookie）
+            // 显示用户信息(如果用户信息中缺少cookie,则尝试使用状态信息中的cookie)
             const displayData = { ...result.bristolUserInfo };
             if ((!displayData.cookie || displayData.cookie === '-') && result.bristolStatus && result.bristolStatus.cookie) {
                 displayData.cookie = result.bristolStatus.cookie;
@@ -94,7 +94,7 @@ function displayUserInfo(userInfo) {
     document.getElementById('serviceUsername').textContent = userInfo.serviceUsername || '未知';
     document.getElementById('cookie').textContent = userInfo.cookie || '无Cookie信息';
     
-    // 显示课程表按钮（当有cookie时）
+    // 显示课程表按钮(当有cookie时)
     const timetableSection = document.getElementById('timetableSection');
     if (userInfo.cookie && userInfo.cookie !== '无Cookie信息') {
         timetableSection.style.display = 'block';
@@ -197,7 +197,7 @@ function updateStatus(message) {
     document.getElementById('status').textContent = message;
 }
 
-// 监听storage变化，实时更新数据
+// 监听storage变化,实时更新数据
 chrome.storage.onChanged.addListener(function(changes, namespace) {
     if (namespace === 'local' && (changes.bristolUserInfo || changes.bristolStatus)) {
         // 统一调用加载方法以合并可能来自状态信息的cookie
@@ -211,7 +211,7 @@ function initializeDateInputs() {
     const startDateInput = document.getElementById('startDate');
     const endDateInput = document.getElementById('endDate');
     
-    // 如果输入框为空，设置默认值
+    // 如果输入框为空,设置默认值
     if (!startDateInput.value) {
         const today = new Date();
         startDateInput.value = today.toISOString().split('T')[0];
@@ -230,11 +230,11 @@ async function getTimetable(cookie) {
     const startDateInput = document.getElementById('startDate');
     const endDateInput = document.getElementById('endDate');
     
-    // 获取用户输入的日期，如果为空则使用默认值
+    // 获取用户输入的日期,如果为空则使用默认值
     let startDate = startDateInput.value;
     let endDate = endDateInput.value;
     
-    // 如果没有输入日期，使用默认值
+    // 如果没有输入日期,使用默认值
     if (!startDate) {
         const today = new Date();
         startDate = today.toISOString().split('T')[0]; // 今天
@@ -304,14 +304,14 @@ async function getTimetable(cookie) {
                 try {
                     payload = JSON.parse(text);
                 } catch (_) {
-                    // 非JSON响应，作为错误处理
+                    // 非JSON响应,作为错误处理
                     timetableResult.className = 'timetable-result timetable-error';
-                    timetableResult.textContent = `课程表获取成功，但响应不是JSON，无法解析为事件列表。`;
+                    timetableResult.textContent = `课程表获取成功,但响应不是JSON,无法解析为事件列表.`;
                     return;
                 }
             }
             
-            // 渲染为表格：只保留关键字段
+            // 渲染为表格:只保留关键字段
             const events = Array.isArray(payload?.events) ? payload.events : (Array.isArray(payload) ? payload : []);
             
             // 获取所有地点信息并批量获取坐标
@@ -341,7 +341,7 @@ async function getTimetable(cookie) {
             console.error('课程表请求失败:', response.status, errorText);
             
             timetableResult.className = 'timetable-result timetable-error';
-            timetableResult.textContent = `课程表获取失败！\n状态码: ${response.status}\n错误信息: ${errorText || '未知错误'}`;
+            timetableResult.textContent = `课程表获取失败!\n状态码: ${response.status}\n错误信息: ${errorText || '未知错误'}`;
         }
         
     } catch (error) {
@@ -349,7 +349,7 @@ async function getTimetable(cookie) {
         
         // 显示异常结果
         timetableResult.className = 'timetable-result timetable-error';
-        timetableResult.textContent = `课程表获取异常！\n错误: ${error.message}`;
+        timetableResult.textContent = `课程表获取异常!\n错误: ${error.message}`;
     } finally {
         // 恢复按钮状态
         getTimetableBtn.disabled = false;
@@ -357,20 +357,20 @@ async function getTimetable(cookie) {
     }
 }
 
-// 将课程表事件渲染为表格，仅保留关键字段
+// 将课程表事件渲染为表格,仅保留关键字段
 function renderTimetable(events, historyMap = {}) {
     const timetableResult = document.getElementById('timetableResult');
     timetableResult.className = 'timetable-result timetable-success';
     
     if (!events || events.length === 0) {
-        timetableResult.textContent = '没有查询到任何课程安排。';
+        timetableResult.textContent = '没有查询到任何课程安排.';
         return;
     }
 
-    // 排序：按开始时间
+    // 排序:按开始时间
     const sorted = [...events].sort((a, b) => new Date(a.start || a.calDate) - new Date(b.start || b.calDate));
 
-    // 更新全局数据以匹配排序后的显示顺序，确保索引对应正确
+    // 更新全局数据以匹配排序后的显示顺序,确保索引对应正确
     currentTimetableData = sorted;
 
     const rowsHtml = sorted.map((ev, index) => {
@@ -395,7 +395,7 @@ function renderTimetable(events, historyMap = {}) {
          const coordinates = locationCache[location];
          let locationDisplay = escapeHtml(location);
          
-         // 如果有坐标信息，添加地图链接
+         // 如果有坐标信息,添加地图链接
          if (coordinates && typeof coordinates.latitude === 'number' && typeof coordinates.longitude === 'number') {
              const mapLink = generateMapLink(coordinates, location);
              const coordText = `${coordinates.latitude.toFixed(6)}, ${coordinates.longitude.toFixed(6)}`;
@@ -504,7 +504,7 @@ function extractBuildingName(location) {
         }
     }
     
-    // 如果没有匹配，尝试提取冒号前的部分
+    // 如果没有匹配,尝试提取冒号前的部分
     const colonIndex = location.indexOf(':');
     if (colonIndex > 0) {
         return location.substring(0, colonIndex).trim();
@@ -513,7 +513,7 @@ function extractBuildingName(location) {
     return location;
 }
 
-// 新增：地点归类的归一化键
+// 新增:地点归类的归一化键
 function normalizeLocationKey(location) {
     let key = extractBuildingName(location || '').trim();
     // 移除括号、房间号等附加信息
@@ -524,7 +524,7 @@ function normalizeLocationKey(location) {
     return key.toLowerCase();
 }
 
-// 新增：多API地理编码（无密钥）
+// 新增:多API地理编码(无密钥)
 async function geocodeByApis(query) {
     // 1) Nominatim (OpenStreetMap)
     try {
@@ -569,7 +569,7 @@ async function geocodeByApis(query) {
 
     await new Promise(r => setTimeout(r, 150));
 
-    // 3) Open-Meteo Geocoding API（免费无密钥）
+    // 3) Open-Meteo Geocoding API(免费无密钥)
     try {
         const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`;
         const response = await fetch(url, {
@@ -592,14 +592,14 @@ async function geocodeByApis(query) {
     return null;
 }
 
-// 获取地点经纬度的函数（多层级查询策略）
+// 获取地点经纬度的函数(多层级查询策略)
 async function getLocationCoordinates(location) {
     // 检查缓存
     if (locationCache[location]) {
         return locationCache[location];
     }
     
-    // 定义多个查询策略，从具体到一般
+    // 定义多个查询策略,从具体到一般
     const queries = [
         `${location}, University of Bristol, Bristol, UK`,
         `${extractBuildingName(location)}, University of Bristol, Bristol, UK`,
@@ -635,7 +635,7 @@ async function getLocationCoordinates(location) {
         }
     }
     
-    // 如果所有策略都失败，缓存null避免重复请求
+    // 如果所有策略都失败,缓存null避免重复请求
     locationCache[location] = null;
     await saveLocationCache();
     return null;
@@ -676,7 +676,7 @@ async function fetchCheckinHistory(cookie) {
     return {};
 }
 
-// 批量获取地点坐标（返回统计信息）
+// 批量获取地点坐标(返回统计信息)
 async function batchGetCoordinates(locations) {
     const uniqueLocations = [...new Set((locations || []).filter(loc => loc && loc.trim()))];
     // 1) 按归一化键分组
@@ -709,14 +709,14 @@ async function batchGetCoordinates(locations) {
         }
     }
 
-    // 若全部命中，无需请求
+    // 若全部命中,无需请求
     if (keysToFetch.length === 0) {
         await saveLocationCache();
         return { successCount: successGroups, totalCount: groupMap.size };
     }
 
-    // 3) 并发请求（受限并发）对每个归一化键进行一次地理编码
-    const limit = 4; // 默认并发度，可调 2-6
+    // 3) 并发请求(受限并发)对每个归一化键进行一次地理编码
+    const limit = 4; // 默认并发度,可调 2-6
     const resultsByKey = new Map();
     const tasks = keysToFetch.map(key => async () => {
         // 小延迟避免公共API节流
@@ -737,7 +737,7 @@ async function batchGetCoordinates(locations) {
     const workers = Array(Math.min(limit, tasks.length)).fill(0).map(() => worker());
     await Promise.all(workers);
 
-    // 4) 将成功结果传播到各组的原始地点，并计数
+    // 4) 将成功结果传播到各组的原始地点,并计数
     for (const [key, res] of resultsByKey.entries()) {
         const origSet = groupMap.get(key);
         if (!origSet) continue;
@@ -763,7 +763,7 @@ function generateMapLink(coordinates, locationName) {
 // 全局变量存储当前课程表数据
 let currentTimetableData = [];
 
-// 修改renderTimetable函数，保存数据并显示一键签到按钮
+// 修改renderTimetable函数,保存数据并显示一键签到按钮
 function renderTimetableWithCheckin(events) {
     currentTimetableData = events || [];
     renderTimetable(events);
@@ -785,7 +785,7 @@ async function oneClickCheckin(cookie) {
     // 获取选中的课程
     const checkboxes = document.querySelectorAll('.event-checkbox:checked');
     if (checkboxes.length === 0) {
-        showCheckinStatus('请先选择要签到的课程！', 'error');
+        showCheckinStatus('请先选择要签到的课程!', 'error');
         return;
     }
     
@@ -830,7 +830,7 @@ async function oneClickCheckin(cookie) {
         
         // 显示结果
         const statusClass = failCount === 0 ? 'success' : (successCount === 0 ? 'error' : 'success');
-        const summary = `签到完成！成功: ${successCount}, 失败: ${failCount}`;
+        const summary = `签到完成!成功: ${successCount}, 失败: ${failCount}`;
         showCheckinStatus(`${summary}\n\n${results.join('\n')}`, statusClass);
         
     } catch (error) {
@@ -842,7 +842,21 @@ async function oneClickCheckin(cookie) {
         checkinBtn.textContent = '一键签到';
     }
 }
+// ====== 随机坐标扰动工具函数(单位:米) ======
+function randomOffsetLat(baseLat, meters) {
+    // 1° 纬度 ≈ 111111 米,简单近似即可
+    const degreePerMeter = 1 / 111111;
+    const deltaMeters = (Math.random() * 2 - 1) * meters; // [-meters, +meters]
+    return deltaMeters * degreePerMeter;
+}
 
+function randomOffsetLng(baseLat, meters) {
+    // 经度需要乘以 cos(纬度) 修正
+    const rad = baseLat * Math.PI / 180;
+    const degreePerMeter = 1 / (111111 * Math.cos(rad || 1)); // 避免 cos(0) 问题
+    const deltaMeters = (Math.random() * 2 - 1) * meters;     // [-meters, +meters]
+    return deltaMeters * degreePerMeter;
+}
 // 执行单个课程签到
 async function performCheckin(event, cookie) {
     const eventRef = event.eventRef;
@@ -855,26 +869,34 @@ async function performCheckin(event, cookie) {
     const otcInput = document.getElementById('otcInput');
     let otcCode = otcInput ? otcInput.value.trim() : '';
     
-    // 如果用户没有输入OTC，尝试自动生成
+    // 如果用户没有输入OTC,尝试自动生成
     if (!otcCode && eventRef) {
-        console.log('用户未输入OTC，尝试自动生成...');
+        console.log('用户未输入OTC,尝试自动生成...');
         const generatedOtc = generateValidCode(eventRef);
         if (generatedOtc) {
             otcCode = generatedOtc;
             console.log('已自动生成OTC:', otcCode);
-            // 可选：在界面上显示使用的代码（如果需要）
+            // 可选:在界面上显示使用的代码(如果需要)
         }
     }
 
     // 获取地点坐标
     const coordinates = locationCache[location];
-    let deviceLat = 53.381130; // 默认坐标（Sheffield University, Diamond Building）
-    let deviceLong = -1.487890;
-    
-    if (coordinates && coordinates.latitude && coordinates.longitude) {
-        deviceLat = coordinates.latitude;
-        deviceLong = coordinates.longitude;
+
+    // 1. 先确定基础坐标(真实建筑坐标 or 默认 Diamond 坐标)
+    let baseLat = 53.381130;  // 默认坐标(Sheffield University, Diamond Building)
+    let baseLong = -1.487890;
+
+    if (coordinates && typeof coordinates.latitude === 'number' && typeof coordinates.longitude === 'number') {
+        baseLat = coordinates.latitude;
+        baseLong = coordinates.longitude;
     }
+
+    // 2. 在基础坐标上增加一个小随机偏移(例如 ±15 米)
+    const jitterMeters = 15; // 你可以改成 5 / 10 / 20,自由调
+    const deviceLat = baseLat + randomOffsetLat(baseLat, jitterMeters);
+    const deviceLong = baseLong + randomOffsetLng(baseLat, jitterMeters);
+
     
     // 构建签到请求数据
     const checkinData = {
@@ -888,7 +910,7 @@ async function performCheckin(event, cookie) {
         deviceLong: deviceLong,
         devicePrecision: 28,
         locationRef: location,
-        otc: otcCode || null, // 使用用户输入的OTC密码（或自动生成的），如果为空则为null
+        otc: otcCode || null, // 使用用户输入的OTC密码(或自动生成的),如果为空则为null
         qr: null
     };
     
@@ -932,8 +954,8 @@ async function performCheckin(event, cookie) {
                     parsedResponse = JSON.parse(responseText);
                     console.log('解析JSON响应:', parsedResponse);
                 } catch (jsonError) {
-                    // 如果JSON解析失败，尝试XML解析
-                    console.log('JSON解析失败，尝试XML解析');
+                    // 如果JSON解析失败,尝试XML解析
+                    console.log('JSON解析失败,尝试XML解析');
                     const parser = new DOMParser();
                     const xmlDoc = parser.parseFromString(responseText, "text/xml");
                     
@@ -959,8 +981,8 @@ async function performCheckin(event, cookie) {
                     console.log('签到状态:', status, '描述:', description);
                     
                     if (status === 'validated') {
-                        // 签到成功（包括重复签到）
-                        const message = description === 'Duplicate check-in' ? '重复签到（已签到过）' : '签到成功';
+                        // 签到成功(包括重复签到)
+                        const message = description === 'Duplicate check-in' ? '重复签到(已签到过)' : '签到成功';
                         return { success: true, status: status, message: message, response: responseText };
                     } else if (status === 'invalid' || status === 'unvalidated') {
                         // 签到失败
@@ -971,12 +993,12 @@ async function performCheckin(event, cookie) {
                         return { success: false, status: status, error: `未知签到状态: ${status}`, response: responseText };
                     }
                 } else {
-                    // 无法找到状态字段，按成功处理（向后兼容）
+                    // 无法找到状态字段,按成功处理(向后兼容)
                     return { success: true, response: responseText };
                 }
             } catch (parseError) {
                 console.error('解析签到响应失败:', parseError);
-                // 解析失败，按成功处理（向后兼容）
+                // 解析失败,按成功处理(向后兼容)
                 return { success: true, response: responseText };
             }
         } else {
@@ -1043,13 +1065,13 @@ renderTimetable = function(events, historyMap) {
         // 显示使用说明
         const twoColumnContainer = document.getElementById('twoColumnContainer');
         if (twoColumnContainer) {
-    // 使用单列纵向布局，避免与内部样式冲突导致并排
+    // 使用单列纵向布局,避免与内部样式冲突导致并排
     twoColumnContainer.style.display = 'block';
   }
         
         checkinBtn.style.display = 'block';
         
-        // 添加事件监听器（如果还没有添加）
+        // 添加事件监听器(如果还没有添加)
         if (!checkinBtn.hasAttribute('data-listener-added')) {
             checkinBtn.addEventListener('click', function() {
                 
@@ -1065,7 +1087,7 @@ renderTimetable = function(events, historyMap) {
                     if (cookie) {
                         oneClickCheckin(cookie);
                     } else {
-                        showCheckinStatus('未找到有效的Cookie，请先登录Sheffield系统', 'error');
+                        showCheckinStatus('未找到有效的Cookie,请先登录Sheffield系统', 'error');
                     }
                 });
             });
@@ -1091,20 +1113,20 @@ renderTimetable = function(events, historyMap) {
 
 // 清除所有数据的函数
 function clearAllData() {
-    if (confirm('确定要清除所有数据吗？这将删除所有存储的用户信息和状态数据，程序将重新开始监听和获取数据。')) {
+    if (confirm('确定要清除所有数据吗?这将删除所有存储的用户信息和状态数据,程序将重新开始监听和获取数据.')) {
         // 清除Chrome存储中的所有相关数据
         chrome.storage.local.clear(function() {
             console.log('所有数据已清除');
             
             // 重新加载页面状态
             showNoDataMessage();
-            updateStatus('数据已清除，请重新访问Bristol网站获取数据');
+            updateStatus('数据已清除,请重新访问Bristol网站获取数据');
             
             // 隐藏用户信息区域
             document.getElementById('userInfo').style.display = 'none';
             
             // 显示成功消息
-            alert('数据清除成功！请重新访问Bristol大学网站以获取新的用户信息。');
+            alert('数据清除成功!请重新访问Bristol大学网站以获取新的用户信息.');
         });
     }
 }
@@ -1139,7 +1161,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const donateBtn = document.getElementById('donateBtn');
     if (donateBtn) {
         donateBtn.addEventListener('click', function() {
-            // 延迟显示感谢页面，给用户时间完成捐赠
+            // 延迟显示感谢页面,给用户时间完成捐赠
             setTimeout(function() {
                 showPage('thankYouPage');
             }, 2000);
@@ -1251,7 +1273,7 @@ var sha256 = (function() {
   
   // --- 第2部分: 自定义进制转换和校验和逻辑 ---
   
-  // 用于自定义“26进制”转换的字符映射表
+  // 用于自定义"26进制"转换的字符映射表
   const u_chars = "0123456789abcdefghijklmnop".split("");
   const p_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
   const char_map = {};
@@ -1260,7 +1282,7 @@ var sha256 = (function() {
   });
   
   /**
-  * 将整数转换为自定义的、由A-Z组成的字母字符串。
+  * 将整数转换为自定义的、由A-Z组成的字母字符串.
   */
   function intToAlpha(num, length) {
     // 1. 将数字转换为26进制字符串 (字符集为 0-9, a-p)
@@ -1275,10 +1297,10 @@ var sha256 = (function() {
   }
   
   /**
-  * 将十六进制的哈希字符串转换为自定义字母字符串。
+  * 将十六进制的哈希字符串转换为自定义字母字符串.
   */
   function hashToAlpha(hashHex, length) {
-    // 原始逻辑只取哈希值的前13位进行转换，以保证数字大小在安全范围内
+    // 原始逻辑只取哈希值的前13位进行转换,以保证数字大小在安全范围内
     const hexSubstring = hashHex.substring(0, 13);
     const num = parseInt(hexSubstring, 16);
     return intToAlpha(num, length);
@@ -1288,7 +1310,7 @@ var sha256 = (function() {
    * 生成校验和
    */
   function generateChecksumFromCombinedString(body, salt, checksumLength) {
-      // 关键发现：直接拼接 body 和 salt
+      // 关键发现:直接拼接 body 和 salt
       const combinedString = body + salt;
       const hash = sha256(combinedString);
       return hashToAlpha(hash, checksumLength);
@@ -1296,12 +1318,12 @@ var sha256 = (function() {
   
   /**
    * 生成有效的签到码
-   * @param {string} salt - 课程的 eventRef。
-   * @param {string} [prefix='ABC'] - 你想要使用的前缀 (任意3位大写字母)。
-   * @returns {string} 一个完整的、有效的6位签到码。
+   * @param {string} salt - 课程的 eventRef.
+   * @param {string} [prefix='ABC'] - 你想要使用的前缀 (任意3位大写字母).
+   * @returns {string} 一个完整的、有效的6位签到码.
    */
   function generateValidCode(salt, prefix) {
-      // 如果没有提供前缀，随机生成一个3位字母前缀
+      // 如果没有提供前缀,随机生成一个3位字母前缀
       if (!prefix) {
           const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
           prefix = '';
@@ -1311,7 +1333,7 @@ var sha256 = (function() {
       }
       
       if (prefix.length !== 3) {
-          console.error("前缀必须是3位大写字母！");
+          console.error("前缀必须是3位大写字母!");
           return null;
       }
       
